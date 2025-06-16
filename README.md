@@ -1,8 +1,9 @@
 # EndecTools
 
-Local-first encryption/decryption utilities
+Local-first encryption/decryption utilities<br/>
+by CMG Solutions
 
-[![PyPI Version](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools/)
+<!-- [![PyPI Version](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools/) -->
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 EndecTools lets you securely encrypt and decrypt files or directories offline, using:
