@@ -1,9 +1,9 @@
 # EndecTools  
 📦 Streaming offline encryption/decryption with TAR+Zstd, AES-CTR+HMAC, and secure shredding.  
 
-[![CI](https://github.com/YourUser/EndecTools/actions/workflows/ci.yaml/badge.svg)](…)
-[![Coverage](https://codecov.io/gh/YourUser/EndecTools/branch/main/graph/badge.svg)](…)
-[![PyPI](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools)
+[![CI](https://github.com/YourUser/EndecTools/actions/workflows/ci.yaml/badge.svg)](https://github.com/CMGsolutions/EndecTools/actions/workflows/ci.yml)
+<!-- [![Coverage](https://codecov.io/gh/YourUser/EndecTools/branch/main/graph/badge.svg)](…) -->
+<!-- [![PyPI](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools) -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 EndecTools lets you securely encrypt and decrypt files or directories offline, using:
