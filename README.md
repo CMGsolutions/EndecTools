@@ -1,10 +1,10 @@
-# EndecTools
+# EndecTools  
+📦 Streaming offline encryption/decryption with TAR+Zstd, AES-CTR+HMAC, and secure shredding.  
 
-Local-first encryption/decryption utilities<br/>
-by CMG Solutions
-
-<!-- [![PyPI Version](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools/) -->
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![CI](https://github.com/YourUser/EndecTools/actions/workflows/ci.yaml/badge.svg)](…)
+[![Coverage](https://codecov.io/gh/YourUser/EndecTools/branch/main/graph/badge.svg)](…)
+[![PyPI](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 EndecTools lets you securely encrypt and decrypt files or directories offline, using:
 
@@ -14,6 +14,17 @@ EndecTools lets you securely encrypt and decrypt files or directories offline, u
 * **Directory support:** Archives directories before encrypting, auto-extracts on decrypt
 * **Safe defaults:** Deletes source by default; use `--keep-source` to preserve
 
+## Table of Contents  
+- [EndecTools](#endectools)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [Usage](#usage)
+  - [Testing](#testing)
+  - [Roadmap](#roadmap)
+  - [License](#license)
+
 ## Features
 
 * **Fast compression:** Achieve 400–600 MiB/s with Zstandard
@@ -22,29 +33,33 @@ EndecTools lets you securely encrypt and decrypt files or directories offline, u
 * **One-command CLI:** `endec encrypt` / `endec decrypt`
 * **Progress bars:** See ETA, throughput, and total size
 
-## Installation
-
+## Installation  
 ```bash
-git clone https://github.com/<YourUser>/EndecTools.git
+git clone …
 cd EndecTools
 python3 -m venv .venv
 source .venv/bin/activate
-pip install --upgrade pip
+pip install -U pip
 pip install -e .
+```
+## Quick Start
 
-# For local installation
-python3 -m pip install -e .
+```bash
+# Encrypt a directory (deletes source by default)
+endec encrypt my_folder
 
+# Decrypt back (deletes archive by default)
+endec decrypt my_folder.tar.zst.enc
 ```
 
 ## Usage
 
 ```bash
-# Encrypt a file or folder (deletes source by default)
-endec encrypt <path> [--out OUTPUT] [-k|--keep-source]
+# Encrypt a file or folder (deletes source by default; secure‐shred unless --no-shred)
+endec encrypt <path> [--out OUTPUT] [-k|--keep-source] [-n|--no-shred]
 
-# Decrypt an encrypted archive (.enc) (deletes .enc by default)
-endec decrypt <path>.enc [--out OUTPUT] [-k|--keep-source]
+# Decrypt an encrypted archive (.enc) (deletes .enc by default; secure‐shred unless --no-shred)
+endec decrypt <path>.enc [--out OUTPUT] [-k|--keep-source] [-n|--no-shred]
 
 # Show version
 endec version
