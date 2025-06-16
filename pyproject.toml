@@ -4,13 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "EndecTools"
-version = "1.0.0"
+version = "0.1.0"
 description = "Local-first encryption / decryption utilities"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "CMG Solutions", email = "cmg.solutions.a@gmail.com" }]
-homepage = "https://github.com/CMGsolutions/EndecTools"
-repository = "https://github.com/CMGsolutions/EndecTools"
 "requires-python" = ">=3.9"
 dependencies = [
   "click>=8.1",
@@ -18,6 +16,10 @@ dependencies = [
   "zstandard>=0.21",
   "tqdm>=4.65"
 ]
+
+[project.urls]
+Homepage = "https://github.com/YourUser/EndecTools"
+Repository = "https://github.com/YourUser/EndecTools"
 
 [project.optional-dependencies]
 dev = [
