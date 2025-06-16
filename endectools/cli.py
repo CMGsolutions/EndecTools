@@ -1,88 +1,78 @@
+# endectools/cli.py
+import os
 import shutil
 import getpass
-from pathlib import Path
 import click
-from .core import encrypt_path, decrypt_path
+from pathlib import Path
+from .core import (
+    encrypt_path, decrypt_path, shred_path
+)
 from . import __version__
 
-@click.group(context_settings=dict(help_option_names=["-h", "--help"]),
+@click.group(context_settings=dict(help_option_names=["-h","--help"]),
              help="EndecTools – local file & directory encryption utilities.")
-def cli() -> None:
-    pass
+def cli(): pass
 
 @cli.command()
-def version() -> None:
+def version():
     """Show EndecTools version."""
     click.echo(f"EndecTools {__version__}")
 
 @cli.command()
-@click.argument(
-    "path",
-    type=click.Path(exists=True, file_okay=True, dir_okay=True, path_type=Path),
-)
-@click.option(
-    "--out", "out_path", type=click.Path(path_type=Path),
-    help="Output file name (default: <parent>/<name>.enc)"
-)
-@click.option(
-    "-k", "--keep-source", is_flag=True,
-    help="Keep the original file/folder after encryption"
-)
-def encrypt(path: Path, out_path: Path | None, keep_source: bool) -> None:
-    """
-    Encrypt a file or folder (zip+encrypt).  
-    By default deletes the source; pass --keep-source to preserve it.
-    """
+@click.argument("path", type=click.Path(exists=True, file_okay=True, dir_okay=True, path_type=Path))
+@click.option("--out","out_path", type=click.Path(path_type=Path), help="Output file name")
+@click.option("-k","--keep-source", is_flag=True,
+              help="Preserve source after operation (disables shred)")
+@click.option("-n","--no-shred", is_flag=True,
+              help="Skip secure erase; fast delete source")
+def encrypt(path: Path, out_path: Path|None, keep_source: bool, no_shred: bool):
+    """Encrypt a file or folder."""
     out_path = out_path or path.parent / f"{path.name}.enc"
-    if out_path.exists():
-        click.echo("Error: output exists."); raise click.Abort()
-
     pwd = getpass.getpass("Pass-phrase: ").encode()
     encrypt_path(path, out_path, pwd)
     click.secho(f"Encrypted ➜ {out_path}", fg="green")
-
     if not keep_source:
-        # Remove the original file or directory
-        if path.is_dir():
-            shutil.rmtree(path)
+        if no_shred:
+            if path.is_dir(): shutil.rmtree(path)
+            else: path.unlink()
+            click.secho(f"Deleted source (fast) ➜ {path}", fg="yellow")
         else:
-            path.unlink()
-        click.secho(f"Deleted source ➜ {path}", fg="yellow")
+            click.secho("Securely shredding source…", fg="yellow")
+            shred_path(path)
+            click.secho(f"Shredded source ➜ {path}", fg="yellow")
 
 @cli.command()
-@click.argument(
-    "path",
-    type=click.Path(exists=True, file_okay=True, dir_okay=False, path_type=Path),
-)
-@click.option(
-    "--out", "out_path", type=click.Path(path_type=Path),
-    help="Output name (default: drops .enc, placed next to PATH)"
-)
-@click.option(
-    "-k", "--keep-source", is_flag=True,
-    help="Keep the .enc archive after decryption"
-)
-def decrypt(path: Path, out_path: Path | None, keep_source: bool) -> None:
-    """
-    Decrypt an archive created by `endec encrypt`.  
-    By default deletes the .enc file; pass --keep-source to preserve it.
-    """
-    if out_path is None:
-        # default to same parent, basename without .enc
-        basename = path.stem if path.suffix == ".enc" else path.name
-        out_path = path.parent / basename
-
+@click.argument("path", type=click.Path(exists=True, file_okay=True, dir_okay=False, path_type=Path))
+@click.option("--out","out_path", type=click.Path(path_type=Path), help="Output file name")
+@click.option("-k","--keep-source", is_flag=True,
+              help="Preserve archive after operation (disables shred)")
+@click.option("-n","--no-shred", is_flag=True,
+              help="Skip secure erase; fast delete archive")
+def decrypt(path: Path, out_path: Path|None, keep_source: bool, no_shred: bool):
+    """Decrypt an encrypted archive (.enc)."""
+    out_path = out_path or path.parent / path.stem
     pwd = getpass.getpass("Pass-phrase: ").encode()
-    try:
-        decrypt_path(path, out_path, pwd)
-    except ValueError as exc:
-        click.secho(f"Error: {exc}", fg="red"); raise click.Abort()
-
+    decrypt_path(path, out_path, pwd)
     click.secho(f"Decrypted ➜ {out_path}", fg="green")
-
     if not keep_source:
-        path.unlink()
-        click.secho(f"Deleted encrypted ➜ {path}", fg="yellow")
+        if no_shred:
+            path.unlink()
+            click.secho(f"Deleted archive (fast) ➜ {path}", fg="yellow")
+        else:
+            click.secho("Securely shredding archive…", fg="yellow")
+            shred_path(path)
+            click.secho(f"Shredded archive ➜ {path}", fg="yellow")
 
-if __name__ == "__main__":
+@cli.command()
+@click.argument("path", type=click.Path(exists=True, path_type=Path))
+@click.option("-p","--passes", default=3, show_default=True, help="Overwrite passes")
+@click.option("--pattern", type=click.Choice(["rand","zero"]), default="rand",
+              show_default=True, help="Overwrite pattern")
+def shred(path: Path, passes: int, pattern: str):
+    """Securely erase a file or directory by overwriting data."""
+    click.secho(f"Shredding {path} ({passes} passes, pattern={pattern})…", fg="yellow")
+    shred_path(path, passes=passes, pattern=pattern)
+    click.secho("Shred complete.", fg="green")
+
+if __name__ == '__main__':
     cli()
