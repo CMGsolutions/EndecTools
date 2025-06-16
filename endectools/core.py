@@ -107,8 +107,14 @@ def decrypt_path(src_enc: Path, dst_root: Path, pwd: bytes) -> None:
     tmp_tar = dst_root.with_suffix(".tmp.tar")
 
     with src_enc.open("rb") as fin:
+        # Read & verify header
         hdr = fin.read(HEADER_SIZE)
-        magic, salt, nonce = struct.unpack(HEADER_FMT, hdr)
+        if len(hdr) != HEADER_SIZE:
+            raise ValueError("Not an EndecTools file")
+        try:
+            magic, salt, nonce = struct.unpack(HEADER_FMT, hdr)
+        except struct.error:
+            raise ValueError("Not an EndecTools file")
         if magic != MAGIC:
             raise ValueError("Not an EndecTools file")
 
