@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "EndecTools"
+version = "0.1.0"
+description = "Local-first encryption / decryption utilities"
+requires-python = ">=3.9"
+dependencies = [
+  "click>=8.1",
+  "cryptography>=42",
+  "zstandard>=0.21",
+  "tqdm>=4.65",
+  "pytest>=7.0"
+]
+
+[project.scripts]
+endec = "endectools.cli:cli"

@@ -1,0 +1,15 @@
+# Python artefacts
+__pycache__/
+*.py[cod]
+.venv/
+
+# Packaging
+dist/
+build/
+*.egg-info/
+
+# Editors
+.vscode/
+.idea/
+
+test/
