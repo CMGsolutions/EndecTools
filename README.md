@@ -6,13 +6,7 @@
 <!-- [![PyPI](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools) -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**EndecTools** lets you securely encrypt files or folders using high-speed compression, strong encryption, and tamper detection. It also includes a local-first secrets **vault** and string **hashing utilities**.
-
-* **Compression:** TAR + Zstandard (multi-threaded, high-speed)
-* **Encryption:** AES-CTR streaming + HMAC-SHA256 (authenticated)
-* **Progress:** Adaptive chunk sizes with live `tqdm` bars
-* **Directory support:** Archives directories before encrypting, auto-extracts on decrypt
-* **Safe defaults:** Deletes source by default; use `--keep-source` to preserve
+**EndecTools 1.1.0** introduces a full-featured secrets **vault subsystem**, interactive **hashing utilities**, and CLI polish — all while remaining local-first and offline.
 
 ## Table of Contents  
 - [EndecTools – v1.1.0](#endectools--v110)
