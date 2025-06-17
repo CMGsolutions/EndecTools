@@ -1,12 +1,12 @@
-# EndecTools  
-📦 Streaming offline encryption/decryption with TAR+Zstd, AES-CTR+HMAC, and secure shredding.  
+# EndecTools – v1.1.0  
+📦 Streaming offline encryption/decryption with TAR+Zstd, AES-CTR+HMAC, secure vault, and shredding utilities.
 
 [![CI](https://github.com/YourUser/EndecTools/actions/workflows/ci.yaml/badge.svg)](https://github.com/CMGsolutions/EndecTools/actions/workflows/ci.yml)
 <!-- [![Coverage](https://codecov.io/gh/YourUser/EndecTools/branch/main/graph/badge.svg)](…) -->
 <!-- [![PyPI](https://img.shields.io/pypi/v/endectools)](https://pypi.org/project/endectools) -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-EndecTools lets you securely encrypt and decrypt files or directories offline, using:
+**EndecTools** lets you securely encrypt files or folders using high-speed compression, strong encryption, and tamper detection. It also includes a local-first secrets **vault** and string **hashing utilities**.
 
 * **Compression:** TAR + Zstandard (multi-threaded, high-speed)
 * **Encryption:** AES-CTR streaming + HMAC-SHA256 (authenticated)
@@ -15,27 +15,32 @@ EndecTools lets you securely encrypt and decrypt files or directories offline, u
 * **Safe defaults:** Deletes source by default; use `--keep-source` to preserve
 
 ## Table of Contents  
-- [EndecTools](#endectools)
+- [EndecTools – v1.1.0](#endectools--v110)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Installation](#installation)
   - [Quick Start](#quick-start)
   - [Usage](#usage)
+  - [Vault Commands](#vault-commands)
+  - [Hash Utilities](#hash-utilities)
   - [Testing](#testing)
-  - [Roadmap](#roadmap)
   - [License](#license)
 
 ## Features
 
-* **Fast compression:** Achieve 400–600 MiB/s with Zstandard
-* **Streaming encryption:** Encrypt gigabytes without high memory usage
-* **Authenticated:** Tamper-detection via HMAC
-* **One-command CLI:** `endec encrypt` / `endec decrypt`
-* **Progress bars:** See ETA, throughput, and total size
+- 🔒 **Streaming encryption:** AES-CTR + HMAC-SHA256 for gigabyte-scale data
+- 📦 **Fast compression:** TAR + Zstandard at 400–600 MiB/s
+- 🔁 **Directory support:** Archives/extracts full directory trees
+- 🧪 **Tamper detection:** Authenticated encryption via HMAC
+- 🔐 **Encrypted secrets vault:** Master password + per-entry password
+- 🧮 **Hashing utilities:** Choose from SHA-256, BLAKE2, SHA-1, MD5, etc.
+- 📊 **Live progress:** `tqdm` bars with ETA, throughput, and size
+- 🧨 **Shred support:** Securely erase files or folders with multiple passes
+- 🧪 **Tested:** Fully unit-tested core logic
 
 ## Installation  
 ```bash
-git clone …
+git clone https://github.com/CMGsolutions/EndecTools.git
 cd EndecTools
 python3 -m venv .venv
 source .venv/bin/activate
@@ -48,24 +53,71 @@ pip install -e .
 # Encrypt a directory (deletes source by default)
 endec encrypt my_folder
 
-# Decrypt back (deletes archive by default)
+# Decrypt it back
 endec decrypt my_folder.tar.zst.enc
+
+# Hash a string
+endec hash string
 ```
 
 ## Usage
 
 ```bash
-# Encrypt a file or folder (deletes source by default; secure‐shred unless --no-shred)
+# Encrypt a file or folder
 endec encrypt <path> [--out OUTPUT] [-k|--keep-source] [-n|--no-shred]
 
-# Decrypt an encrypted archive (.enc) (deletes .enc by default; secure‐shred unless --no-shred)
+# Decrypt an encrypted archive (.enc)
 endec decrypt <path>.enc [--out OUTPUT] [-k|--keep-source] [-n|--no-shred]
+
+# Shred a file or folder
+endec shred <path> [-p PASSES] [--pattern rand|zero]
 
 # Show version
 endec version
+```
 
-# Install shell completion
-endec --install-completion
+## Vault Commands
+
+Store and retrieve encrypted strings with per-entry passwords:
+
+```bash
+# Initialize new vault
+endec vault init
+
+# Add a secret (label + value + entry password)
+endec vault add
+
+# Retrieve a secret
+endec vault get
+
+# Edit a stored secret
+endec vault edit
+
+# Delete a specific secret
+endec vault delete
+
+# List encrypted labels (only if label encryption disabled)
+endec vault list
+
+# Destroy the entire vault (requires system password)
+endec vault destroy
+```
+Vault security features:
+- Master password (3-layer SHA-256 derivation)
+- Fully encrypted metadata and labels
+- Per-entry password required to decrypt individual secrets
+- AES-CTR + HMAC authenticated encryption
+- System password required to destroy vault
+
+## Hash Utilities
+
+Store and retrieve encrypted strings with per-entry passwords:
+
+```bash
+# Interactively hash a string
+endec hash string
+
+# Choose from: SHA-256, BLAKE2, SHA-1, MD5, and others
 ```
 
 ## Testing
@@ -82,12 +134,6 @@ For coverage reporting (optional), install `pytest-cov` and run:
 ```bash
 pytest --maxfail=1 -q --cov=endectools --cov-report=term-missing
 ```
-
-## Roadmap
-
-* Secure wipe of plaintext before deletion
-* GitHub Actions CI and PyPI release
-* Enhanced directory flags (exclusions, patterns)
 
 ## License
 
