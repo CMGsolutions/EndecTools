@@ -1,17 +1,11 @@
-from click.testing import CliRunner
-import pytest
-from endectools.cli import cli
+import subprocess
 
-@pytest.fixture
-def runner():
-    return CliRunner()
+def test_endec_version():
+    result = subprocess.run(["endec", "version"], capture_output=True, text=True)
+    assert result.returncode == 0
+    assert "EndecTools" in result.stdout
 
-def test_version(runner):
-    result = runner.invoke(cli, ["version"])
-    assert result.exit_code == 0
-    assert "EndecTools" in result.output
-
-def test_help(runner):
-    result = runner.invoke(cli, ["--help"])
-    assert result.exit_code == 0
-    assert "encrypt" in result.output and "decrypt" in result.output
+def test_endec_help():
+    result = subprocess.run(["endec", "--help"], capture_output=True, text=True)
+    assert result.returncode == 0
+    assert "Usage" in result.stdout

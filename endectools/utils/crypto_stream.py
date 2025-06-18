@@ -85,6 +85,10 @@ def encrypt_path(src: Path, dst_enc: Path, pwd: bytes) -> None:
     encryptor = cipher.encryptor()
     hctx = hmac.HMAC(key_mac, hashes.SHA256(), backend=default_backend())
 
+    # Ensure destination is hidden
+    if dst_enc.name[0] != ".":
+        dst_enc = dst_enc.with_name("." + dst_enc.name)
+
     with dst_enc.open("wb") as fout:
         fout.write(struct.pack(HEADER_FMT, MAGIC, salt, nonce))
         with tqdm.tqdm(total=total, unit="B", unit_scale=True,
@@ -104,7 +108,7 @@ def encrypt_path(src: Path, dst_enc: Path, pwd: bytes) -> None:
 def decrypt_path(src_enc: Path, dst_root: Path, pwd: bytes) -> None:
     total_file = src_enc.stat().st_size
     cipher_len = total_file - HEADER_SIZE - TAG_LEN
-    tmp_tar = dst_root.with_suffix(".tmp.tar")
+    tmp_tar = dst_root.parent / f".{dst_root.name}.tmp.tar"
 
     with src_enc.open("rb") as fin:
         # Read & verify header

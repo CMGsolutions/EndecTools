@@ -1,31 +1,40 @@
+# endectools/utils/hashutils.py
+
 import hashlib
-from getpass import getpass
+import click
 
-ALGOS = {
-    "1": ("SHA-256", hashlib.sha256),
-    "2": ("SHA-512", hashlib.sha512),
-    "3": ("SHA3-256", hashlib.sha3_256),
-    "4": ("BLAKE2b", hashlib.blake2b),
-}
+def hash_string(s: str, algorithm: str = "sha256") -> str:
+    """
+    Hash a string using the specified algorithm and return the hex digest.
+    """
+    h = hashlib.new(algorithm)
+    h.update(s.encode("utf-8"))
+    return h.hexdigest()
 
-def hash_string_interactive():
-    print("Enter string to hash:")
-    s = getpass("Input: ")  # Using getpass to avoid showing input
+def hash_string_interactive() -> str:
+    """
+    Prompt the user for a string and hashing algorithm, then output the hash.
+    """
+    s = click.prompt("Enter string to hash", type=str)
 
-    print("\nChoose algorithm:")
-    for key, (name, _) in ALGOS.items():
-        print(f"[{key}] {name}")
+    click.echo("\nChoose algorithm:")
+    click.echo("[1] SHA-256")
+    click.echo("[2] SHA-512")
+    click.echo("[3] SHA3-256")
+    click.echo("[4] BLAKE2b")
+    selection = click.prompt("Selection", type=int, default=1)
 
-    choice = input("Select [1–4]: ").strip()
-    algo = ALGOS.get(choice)
+    algorithm = {
+        1: "sha256",
+        2: "sha512",
+        3: "sha3_256",
+        4: "blake2b"
+    }.get(selection)
 
-    if not algo:
-        print("Invalid selection.")
-        return
+    if algorithm is None:
+        click.secho("Invalid selection.", fg="red")
+        return None
 
-    name, func = algo
-    digest = func(s.encode()).hexdigest()
-
-    print(f"\n{name} Hash:")
-    print(digest)
-    print()
+    digest = hash_string(s, algorithm)
+    click.secho(f"{algorithm.upper()} → {digest}", fg="green")
+    return digest

@@ -2,8 +2,10 @@
 
 import shutil, getpass, click
 from pathlib import Path
-from .core import encrypt_path, decrypt_path, shred_path
 from . import __version__
+from .utils.crypto_stream import encrypt_path, decrypt_path, shred_path
+from .utils import vault
+from .utils.hashutils import hash_string_interactive
 
 @click.group(help="EndecTools – local file & directory encryption utilities.")
 def cli():
@@ -67,51 +69,44 @@ def shred(path: Path, passes: int, pattern: str):
 
 # --- VAULT COMMAND GROUP ---
 @cli.group()
-def vault():
+def vault_cmd():
     """Manage encrypted secrets vault."""
     pass
 
-@vault.command()
-def init():
+@vault_cmd.command("init")
+def vault_init():
     """Initialize a new encrypted vault."""
-    from .vault import init_vault
-    init_vault()
+    vault.init_vault()
 
-@vault.command()
-def add():
+@vault_cmd.command("add")
+def vault_add():
     """Add a new secret to the vault."""
-    from .vault import add_secret
-    add_secret()
+    vault.add_secret()
 
-@vault.command()
-def get():
+@vault_cmd.command("get")
+def vault_get():
     """Retrieve a secret from the vault."""
-    from .vault import get_secret
-    get_secret()
+    vault.get_secret()
 
-@vault.command()
-def list():
+@vault_cmd.command("list")
+def vault_list():
     """List stored secret labels."""
-    from .vault import list_secrets
-    list_secrets()
+    vault.list_secrets()
 
-@vault.command()
-def edit():
+@vault_cmd.command("edit")
+def vault_edit():
     """Edit a stored secret in the vault."""
-    from .vault import edit_secret
-    edit_secret()
+    vault.edit_secret()
 
-@vault.command()
-def delete():
+@vault_cmd.command("delete")
+def vault_delete():
     """Delete a stored secret from the vault."""
-    from .vault import delete_secret
-    delete_secret()
+    vault.delete_secret()
 
-@vault.command()
-def destroy():
+@vault_cmd.command("destroy")
+def vault_destroy():
     """Permanently destroy the entire vault."""
-    from .vault import delete_vault
-    delete_vault()
+    vault.delete_vault()
 
 # --- HASH COMMAND GROUP ---
 @cli.group()
@@ -122,7 +117,6 @@ def hash():
 @hash.command()
 def string():
     """Hash a string with selectable algorithms."""
-    from .utils.hashutils import hash_string_interactive
     hash_string_interactive()
 
 # --- VERSION COMMAND ---
