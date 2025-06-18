@@ -30,7 +30,7 @@
 - 🧮 **Hashing utilities:** Choose from SHA-256, BLAKE2, SHA-1, MD5, etc.
 - 📊 **Live progress:** `tqdm` bars with ETA, throughput, and size
 - 🧨 **Shred support:** Securely erase files or folders with multiple passes
-- 🧪 **Tested:** Fully unit-tested core logic
+- 🧪 **Tested:** Unit-tested core logic and CLI vault commands
 
 ## Installation  
 ```bash
@@ -90,7 +90,7 @@ endec vault edit
 # Delete a specific secret
 endec vault delete
 
-# List encrypted labels (only if label encryption disabled)
+# List number of stored secrets (does not decrypt)
 endec vault list
 
 # Destroy the entire vault (requires system password)
@@ -105,8 +105,7 @@ Vault security features:
 
 ## Hash Utilities
 
-Store and retrieve encrypted strings with per-entry passwords:
-
+Simple string hashing:
 ```bash
 # Interactively hash a string
 endec hash string
